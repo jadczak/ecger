@@ -192,3 +192,28 @@ def read_212(file: pathlib.Path, signal_lines: list[SignalLine]) -> tuple[dict[i
             channels_real[second_idx].append(second_real)
             channels_adc[second_idx].append(second)
     return channels_adc, channels_real
+
+
+def read_16(file: pathlib.Path, signal_lines: list[SignalLine]) -> tuple[dict[int, list[int]], dict[int, list[float]]]:
+    """
+    https://physionet.org/physiotools/wag/signal-5.htm
+    """
+    signals = len(signal_lines)
+    channels_adc = {}
+    channels_real = {}
+    zeros = {}
+    gains = {}
+    for i in range(signals):
+        channels_adc[i] = []
+        channels_real[i] = []
+        zeros[i] = signal_lines[i].adc_zero
+        gains[i] = signal_lines[i].adc_gain
+    idx = cycle(range(signals))
+    with open(file, "rb") as f:
+        while byte_chunk := f.read(2):
+            val = int.from_bytes(byte_chunk, byteorder="little", signed=True)
+            this_idx = next(idx)
+            channels_adc[this_idx].append(val)
+            real = (val - zeros[this_idx]) / gains[this_idx]
+            channels_real[this_idx].append(real)
+    return channels_adc, channels_real
