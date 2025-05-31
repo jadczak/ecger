@@ -1,4 +1,5 @@
 import pathlib
+from itertools import cycle
 
 
 class RecordLine:
@@ -154,3 +155,40 @@ def read_header(file: pathlib.Path) -> tuple[RecordLine, list[SignalLine]]:
             else:  # TODO: Error handling
                 pass
         return record_line, signal_lines
+
+
+def read_212(file: pathlib.Path, signal_lines: list[SignalLine]) -> tuple[dict[int, list[int]], dict[int, list[float]]]:
+    """
+    https://physionet.org/physiotools/wag/signal-5.htm
+    """
+    signals = len(signal_lines)
+    channels_adc = {}
+    channels_real = {}
+    zeros = {}
+    gains = {}
+    for i in range(signals):
+        channels_adc[i] = []
+        channels_real[i] = []
+        zeros[i] = signal_lines[i].adc_zero
+        gains[i] = signal_lines[i].adc_gain
+    idx = cycle(range(signals))
+    with open(file, "rb") as i:
+        while byte_chunk := i.read(3):
+            chunk = int.from_bytes(byte_chunk, byteorder="big", signed=False)
+            first_least = chunk & 0xFF_00_00
+            first_most = chunk & 0x00_0F_00
+            second_least = chunk & 0x00_00_FF
+            second_most = chunk & 0x00_F0_00
+            first_2s = (first_most >> 0) | (first_least >> 16)
+            second_2s = (second_most >> 4) | (second_least >> 0)
+            first = (first_2s & 0x7FF) - (first_2s & 0x800)
+            second = (second_2s & 0x7FF) - (second_2s & 0x800)
+            first_idx = next(idx)
+            channels_adc[first_idx].append(first)
+            first_real = (first - zeros[first_idx]) / gains[first_idx]
+            channels_real[first_idx].append(first_real)
+            second_idx = next(idx)
+            second_real = (second - zeros[second_idx]) / gains[second_idx]
+            channels_real[second_idx].append(second_real)
+            channels_adc[second_idx].append(second)
+    return channels_adc, channels_real
