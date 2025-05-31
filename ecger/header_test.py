@@ -28,7 +28,7 @@ signal_0 = signal_lines[0]
 assert signal_0.adc_gain == float(200)
 assert signal_0.adc_resolution == 11
 assert signal_0.adc_zero == 1024
-assert signal_0.baseline == None
+assert signal_0.baseline == 1024
 assert signal_0.block_size == 0
 assert signal_0.byte_offset == None
 assert signal_0.checksum == -22131
@@ -46,7 +46,7 @@ signal_1 = signal_lines[1]
 assert signal_1.adc_gain == float(200)
 assert signal_1.adc_resolution == 11
 assert signal_1.adc_zero == 1024
-assert signal_1.baseline == None
+assert signal_1.baseline == 1024
 assert signal_1.block_size == 0
 assert signal_1.byte_offset == None
 assert signal_1.checksum == 20052

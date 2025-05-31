@@ -54,8 +54,8 @@ class SignalLine:
         self.baseline: int | None = None
         self.units: str = "mV"
         self.adc_resolution: int | None = None
-        self.adc_zero: int | None = None
-        self.init_value: int = 0
+        self.adc_zero: int = 0
+        self.init_value: int | None = None
         self.checksum: int | None = None
         self.block_size: int | None = None
         self.description: str | None = None
@@ -146,6 +146,10 @@ def read_header(file: pathlib.Path) -> tuple[RecordLine, list[SignalLine]]:
                             signal_line.block_size = int(field)
                         case 8:
                             signal_line.description = field
+                if signal_line.baseline is None:
+                    signal_line.baseline = signal_line.adc_zero
+                if signal_line.init_value is None:
+                    signal_line.init_value = signal_line.adc_zero
                 signal_lines.append(signal_line)
             else:  # TODO: Error handling
                 pass
