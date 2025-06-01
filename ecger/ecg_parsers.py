@@ -157,7 +157,7 @@ def read_header(file: pathlib.Path) -> tuple[RecordLine, list[SignalLine]]:
         return record_line, signal_lines
 
 
-def read_212(file: pathlib.Path, signal_lines: list[SignalLine]) -> tuple[dict[int, list[int]], dict[int, list[float]]]:
+def read_format212(file: pathlib.Path, signal_lines: list[SignalLine]) -> tuple[dict[int, list[int]], dict[int, list[float]]]:
     """
     https://physionet.org/physiotools/wag/signal-5.htm
     """
@@ -194,7 +194,7 @@ def read_212(file: pathlib.Path, signal_lines: list[SignalLine]) -> tuple[dict[i
     return channels_adc, channels_real
 
 
-def read_16(file: pathlib.Path, signal_lines: list[SignalLine]) -> tuple[dict[int, list[int]], dict[int, list[float]]]:
+def read_format16(file: pathlib.Path, signal_lines: list[SignalLine]) -> tuple[dict[int, list[int]], dict[int, list[float]]]:
     """
     https://physionet.org/physiotools/wag/signal-5.htm
     """
@@ -219,7 +219,7 @@ def read_16(file: pathlib.Path, signal_lines: list[SignalLine]) -> tuple[dict[in
     return channels_adc, channels_real
 
 
-def read_24(file: pathlib.Path, signal_lines: list[SignalLine]) -> tuple[dict[int, list[int]], dict[int, list[float]]]:
+def read_format24(file: pathlib.Path, signal_lines: list[SignalLine]) -> tuple[dict[int, list[int]], dict[int, list[float]]]:
     """
     https://physionet.org/physiotools/wag/signal-5.htm
     """

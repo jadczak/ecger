@@ -9,7 +9,7 @@ data_file = test_dir / "100.dat"
 test_file = test_dir / "100.pkl"
 
 record_line, signal_lines = ecg_parsers.read_header(header_file)
-channels_adc, channels_real = ecg_parsers.read_212(data_file, signal_lines)
+channels_adc, channels_real = ecg_parsers.read_format212(data_file, signal_lines)
 
 
 with open(test_file, "rb") as f:
